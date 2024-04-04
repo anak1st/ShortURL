@@ -20,7 +20,7 @@ public class ShortURLService {
 
     private int counter = 0;
 
-    private static String BASE_URL = "http://s.anak1st.top/";
+    private static String BASE_URL = "https://anak1st.top/s/";
 
     private static int MAX_SHORT_URL_NUM = 100;
     private int next() {
@@ -32,14 +32,8 @@ public class ShortURLService {
         return HashFunction.encode(next());
     }
 
-    public String generateShortURL(String longURL) {
-        ShortURLJpa shortURLJpa = shortURLJpaRepo.findByLongURL(longURL);
-        if (shortURLJpa != null) {
-            return BASE_URL + shortURLJpa.getShortURL();
-        }
-
-        String shortURL = nextHash();
-        shortURLJpa = shortURLJpaRepo.findByShortURL(shortURL);
+    public void updateLongURL(String shortURL, String longURL) {
+        ShortURLJpa shortURLJpa = shortURLJpaRepo.findByShortURL(shortURL);
         if (shortURLJpa == null) {
             shortURLJpa = new ShortURLJpa();
             shortURLJpa.setShortURL(shortURL);
@@ -50,6 +44,15 @@ public class ShortURLService {
         shortURLJpa.setCreatedTime(new Date());
         shortURLJpa.setLastAccessTime(new Date());
         shortURLJpaRepo.save(shortURLJpa);
+    }
+
+    public String generateShortURL(String longURL) {
+        ShortURLJpa shortURLJpa = shortURLJpaRepo.findByLongURL(longURL);
+        if (shortURLJpa != null) {
+            return BASE_URL + shortURLJpa.getShortURL();
+        }
+        String shortURL = nextHash();
+        updateLongURL(shortURL, longURL);
         return BASE_URL + shortURL;
     }
 

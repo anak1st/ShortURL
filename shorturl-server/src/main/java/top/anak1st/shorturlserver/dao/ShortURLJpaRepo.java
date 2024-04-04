@@ -9,6 +9,5 @@ public interface ShortURLJpaRepo extends JpaRepository<ShortURLJpa, String> {
 
     ShortURLJpa findByLongURL(String longURL);
 
-
     void deleteByShortURL(String shortURL);
 }

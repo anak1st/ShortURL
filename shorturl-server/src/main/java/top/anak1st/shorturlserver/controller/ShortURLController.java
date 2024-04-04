@@ -6,53 +6,59 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.view.RedirectView;
 
+import top.anak1st.shorturlserver.model.GenerateCmd;
 import top.anak1st.shorturlserver.model.R;
 import top.anak1st.shorturlserver.service.ShortURLService;
+import top.anak1st.shorturlserver.utils.URLCheck;
 
 @Controller
 public class ShortURLController {
     @Autowired
     private ShortURLService shortURLService;
 
-    @GetMapping("/")
-    public String index() {
-        return "index";
+    @GetMapping("/api")
+    public RedirectView index() {
+        return new RedirectView("http://anak1st.top/");
     }
 
-    @PostMapping("/generate")
+    @PostMapping("/api/generate")
     @ResponseBody
-    public R generate(@RequestParam String longURL) {
+    public R generate(@RequestBody GenerateCmd cmd) {
+        String longURL = cmd.getLongURL();
+        if (!URLCheck.check(longURL)) {
+            return R.error("Invalid URL");
+        }
         String shortURL = shortURLService.generateShortURL(longURL);
         return R.ok(shortURL);
     }
 
-    @GetMapping("/urls/all")
+    @GetMapping("/api/urls/all")
     @ResponseBody
     public R all() {
         return R.ok(shortURLService.getAll());
     }
 
-    @DeleteMapping("/urls/all")
+    @DeleteMapping("/api/urls/all")
     @ResponseBody
     public R deleteAll() {
         shortURLService.deleteAll();
         return R.ok("deleted");
     }
 
-    @GetMapping("/urls/{shortURL}")
+    @GetMapping("/api/urls/{shortURL}")
     @ResponseBody
     public R get(@PathVariable String shortURL) {
         return R.ok(shortURLService.getByShortURL(shortURL));
     }
 
-    @DeleteMapping("/urls/{shortURL}")
+    @DeleteMapping("/api/urls/{shortURL}")
     @ResponseBody
     public R delete(@PathVariable String shortURL) {
         shortURLService.deleteByShortURL(shortURL);
         return R.ok(shortURL);
     }
 
-    @GetMapping("/{shortUrl}")
+    @GetMapping("/s/{shortUrl}")
     public RedirectView redirect(@PathVariable String shortUrl) {
         String longURL = shortURLService.getLongURL(shortUrl);
         if (longURL == null) {
@@ -60,7 +66,6 @@ public class ShortURLController {
         }
         return new RedirectView(longURL);
     }
-
 }
 
 
