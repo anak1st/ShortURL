@@ -25,11 +25,4 @@ public class ShortURLJpa {
     @Column(name = "created_time")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Date createdTime;
-
-    @Column(name = "last_access_time")
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
-    private Date lastAccessTime;
-
-    @Column(name = "access_count")
-    private int accessCount;
 }

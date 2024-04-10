@@ -1,6 +1,5 @@
 package top.anak1st.shorturlserver.controller;
 
-import lombok.Data;
 import org.springframework.stereotype.Controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -10,6 +9,7 @@ import top.anak1st.shorturlserver.model.GenerateCmd;
 import top.anak1st.shorturlserver.model.R;
 import top.anak1st.shorturlserver.service.ShortURLService;
 import top.anak1st.shorturlserver.utils.URLCheck;
+import top.anak1st.shorturlserver.utils.HashUtil;
 
 @Controller
 public class ShortURLController {
@@ -28,7 +28,7 @@ public class ShortURLController {
         if (!URLCheck.check(longURL)) {
             return R.error("Invalid URL");
         }
-        String shortURL = shortURLService.generateShortURL(longURL);
+        String shortURL = shortURLService.saveLongURL(HashUtil.hashToBase62(longURL), longURL, longURL);
         return R.ok(shortURL);
     }
 
